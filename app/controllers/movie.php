@@ -23,6 +23,6 @@
                 }
 
                 // Pass movie data to result view
-                $this->view('movie/result', ['movie' => $movie]);
+                $this->view('movie/results', ['movie' => $movie]);
             }
         }
