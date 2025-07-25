@@ -14,7 +14,6 @@ class App {
 
         $url = $this->parseUrl();
 
-        // Check if controller is specified and file exists
         if (isset($url[0]) && file_exists('app/controllers/' . $url[0] . '.php')) {
             $this->controller = $url[0];
             $_SESSION['controller'] = $this->controller;
@@ -24,32 +23,30 @@ class App {
             }
             unset($url[0]);
         }
-        // No else redirect here; just use default controller if none specified
 
         require_once 'app/controllers/' . $this->controller . '.php';
 
         $this->controller = new $this->controller;
 
-        // Check if method is specified and exists
+        
         if (isset($url[1]) && method_exists($this->controller, $url[1])) {
             $this->method = $url[1];
             $_SESSION['method'] = $this->method;
             unset($url[1]);
         }
 
-        // Rebase params to zero-based array if exist
+        
         $this->params = $url ? array_values($url) : [];
 
         call_user_func_array([$this->controller, $this->method], $this->params);
     }
 
     public function parseUrl() {
-        $u = $_SERVER['REQUEST_URI'];
-        $url = explode('/', filter_var(rtrim($u, '/'), FILTER_SANITIZE_URL));
-        // Remove the first empty element caused by leading slash
-        if (empty($url[0])) {
-            array_shift($url);
-        }
+        
+        $uri = $_SERVER['REQUEST_URI'];
+        $uri = parse_url($uri, PHP_URL_PATH);
+        $uri = trim($uri, '/');
+        $url = explode('/', filter_var($uri, FILTER_SANITIZE_URL));
         return $url;
     }
 }
