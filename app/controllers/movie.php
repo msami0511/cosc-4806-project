@@ -1,30 +1,28 @@
-<?php
+        <?php
+        class Movie extends Controller {
+            public function index() {
+                // Show the search form
+                $this->view('movie/index');
+            }
 
-class Movie extends Controller
-{
-    public function index()
-    {
-        $this->view('movie/index');
-    }
+            public function search() {
+                // Check if movie parameter exists and is not empty
+                if (!isset($_REQUEST['movie']) || empty(trim($_REQUEST['movie']))) {
+                    header('Location: /movie');
+                    exit;
+                }
 
-    public function search()
-    {
-        if (!isset($_GET['movie']) || empty($_GET['movie'])) {
-            header("Location: /movie");
-            exit;
-        }
+                $movie_title = trim($_REQUEST['movie']);
+                $api = $this->model('Api');
+                $movie = $api->search_movie($movie_title);
 
-        $movie_title = $_GET['movie'];
-        $api = $this->model('Api');
-        $movie = $api->search_movie($movie_title);
+                // Handle API error or movie not found
+                if (!$movie || isset($movie['Error'])) {
+                    $this->view('movie/result', ['error' => 'Movie not found or API error.']);
+                    return;
+                }
 
-        if (!isset($movie['Title'])) {
-            $movie = [
-                'Title' => 'Unknown Movie',
-                'Year' => '',
-                'Genre' => 'N/A',
-                'Plot' => 'N/A',
-                'Poster' => 'N/A',
-                'imdbID' => 'unknown'
-            ];
+                // Pass movie data to result view
+                $this->view('movie/result', ['movie' => $movie]);
+            }
         }
