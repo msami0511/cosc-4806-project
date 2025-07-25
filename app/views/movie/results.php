@@ -40,13 +40,13 @@
     </div>
 
     <?php if (!empty($data['review'])): ?>
-        <h4 class="mt-4">🤖 AI-Generated Review:</h4>
+        <h4 class="mt-4"> AI-Generated Review:</h4>
         <div class="alert alert-secondary" style="white-space: pre-wrap;">
             <?= htmlspecialchars($data['review']) ?>
         </div>
     <?php endif; ?>
 
-    <a href="/movie" class="btn btn-outline-primary mt-4">🔙 Back to Search</a>
+    <a href="/movie" class="btn btn-outline-primary mt-4"> Back to Search</a>
 
 </body>
 </html>
